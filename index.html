@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>فرم ارزیابی تیپ‌ها</title>
+  <style>
+    :root{
+      --purple:#7c3aed; /* رنگ بنفش اصلی */
+      --bg-dark:#12071a;
+      --card:#1e1330;
+      --muted:#cfc9db;
+    }
+    html,body{height:100%;margin:0;font-family: "Vazirmatn", Tahoma, Arial, sans-serif;background:radial-gradient(circle at 10% 10%, #190826 0%, var(--bg-dark) 35%, #0b0710 100%);color:var(--muted)}
+    .app{
+      max-width:900px;margin:32px auto;padding:24px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow: 0 6px 30px rgba(0,0,0,0.6);position:relative;overflow:hidden;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    h1{font-size:1.4rem;margin:0;color:var(--purple)}
+    p.lead{margin:6px 0 0;color:#d9cff0}
+
+    /* کارت سوالات */
+    .question{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:10px;margin:12px 0;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px}
+    .q-title{font-weight:600}
+    .scales{display:flex;gap:8px;flex-wrap:wrap}
+    .scale-btn{
+      padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);cursor:pointer;min-width:44px;text-align:center;transition:all .18s ease;user-select:none
+    }
+    .scale-btn:hover{transform:translateY(-3px)}
+    .scale-btn.selected{background:var(--purple);color:#fff;border-color:rgba(124,58,237,0.9);box-shadow:0 6px 20px rgba(124,58,237,0.12)}
+
+    /* دکمه‌ها */
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+    .btn.primary{background:var(--purple);color:#fff}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .btn.warn{background:#ff6b6b;color:#fff}
+
+    /* نمایش نتایج */
+    .results{margin-top:16px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(124,58,237,0.08), rgba(124,58,237,0.03));border:1px solid rgba(124,58,237,0.08);color:#fff}
+    .result-row{display:flex;justify-content:space-between;padding:6px 0}
+
+    footer{margin-top:18px;color:#bfb0e6;text-align:center}
+
+    /* انیمیشن‌ها و تزئینات انیمه‌ای (گلبرگ‌های متحرک) */
+    .petal{position:absolute;top:-10%;width:72px;height:72px;opacity:0.9;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));animation:fall linear infinite}
+    .petal svg{width:100%;height:100%;display:block}
+    .petal.p1{left:8%;animation-duration:16s;animation-delay:0s}
+    .petal.p2{left:48%;animation-duration:20s;animation-delay:3s;opacity:0.75}
+    .petal.p3{left:76%;animation-duration:14s;animation-delay:1s;opacity:0.85}
+    @keyframes fall{
+      0%{transform:translateY(-20vh) rotate(0) translateX(0);opacity:0}
+      10%{opacity:1}
+      50%{transform:translateY(40vh) rotate(180deg) translateX(6vw)}
+      100%{transform:translateY(120vh) rotate(360deg) translateX(-6vw);opacity:0}
+    }
+
+    /* پاسخگو برای موبایل */
+    @media (max-width:640px){.app{margin:12px;padding:16px}}
+
+    /* نوار بنفش راست چین (پس‌زمینه بخشی حاوی فرم) */
+    .rt-area{background:linear-gradient(90deg, rgba(124,58,237,0.18), rgba(124,58,237,0.06));padding:14px;border-radius:12px}
+
+    /* متن توضیحی کوچک */
+    .muted{font-size:0.9rem;color:#e8defb}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <!-- گلبرگ‌ها -->
+    <div class="petal p1" aria-hidden="true">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 2c8 6 14 16 10 26-4 10-18 20-18 20s2-12-4-20C12 24 22 8 32 2z" fill="#eabff2"/></svg>
+    </div>
+    <div class="petal p2" aria-hidden="true">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M20 4c6 2 12 8 12 14s-6 12-12 18C6 44 10 22 20 4z" fill="#f3d6ff"/></svg>
+    </div>
+    <div class="petal p3" aria-hidden="true">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M44 6c6 4 10 12 6 20s-16 14-20 18C16 56 34 28 44 6z" fill="#d0a9ff"/></svg>
+    </div>
+
+    <header>
+      <div>
+        <h1>فرم ارزیابی تیپ شخصیتی</h1>
+        <p class="lead">ده سؤال — مقیاس ۱ تا ۵ — پاسخ‌ها را انتخاب کنید و محاسبه را بزنید.</p>
+      </div>
+      <div class="muted">پس‌زمینه راست‌چین بنفش و جلوه‌های انیمه‌ای</div>
+    </header>
+
+    <section class="rt-area" id="form-area">
+      <form id="survey" onsubmit="return false">
+        <!-- سوالات از جاوااسکریپت تولید می‌شود -->
+        <div id="questions"></div>
+
+        <div class="controls">
+          <button id="calcBtn" class="btn primary" type="button">محاسبه</button>
+          <button id="saveJsonBtn" class="btn ghost" type="button">ذخیره JSON</button>
+          <button id="clearBtn" class="btn ghost" type="button">پاکسازی</button>
+          <button id="downloadMdBtn" class="btn ghost" type="button">دانلود Markdown</button>
+        </div>
+
+        <div id="feedback" style="margin-top:12px"></div>
+      </form>
+
+      <div id="resultsArea" style="display:none" class="results" aria-live="polite"></div>
+    </section>
+
+    <footer>طراحی ساده، بدون نیاز به سرور — همه چیز در مرورگر انجام می‌شود.</footer>
+  </div>
+
+  <script>
+    // داده‌های پرسش‌ها: هر سوال به یکی از تیپ‌ها امتیاز می‌دهد
+    const questions = [
+      {id:1,text:'من اغلب ایده‌های جدید و خلاقانه دارم.',type:'خلاق'},
+      {id:2,text:'دوست دارم گروه را هدایت کنم و تصمیم‌گیری کنم.',type:'رهبر'},
+      {id:3,text:'تحلیل دقیق اطلاعات و منطق برایم مهم است.',type:'تحلیل‌گر'},
+      {id:4,text:'از حمایت و همدلی با دیگران لذت می‌برم.',type:'حامی'},
+      {id:5,text:'ماجراجویی و ریسک‌های جدید را می‌پسندم.',type:'ماجراجو'},
+      {id:6,text:'در برخورد با مسائل خلاقانه‌ام و دنبال راه‌حل‌های نو هستم.',type:'خلاق'},
+      {id:7,text:'تمایل دارم مسئولیت‌ها را قبول کنم و هدایت کنم.',type:'رهبر'},
+      {id:8,text:'قبل از اقدام، جزئیات را دقیق بررسی می‌کنم.',type:'تحلیل‌گر'},
+      {id:9,text:'پشتیبانی از دیگران و شنیدن آنها برایم مهم است.',type:'حامی'},
+      {id:10,text:'آمادگی امتحان تجربیات جدید و چالش‌طلبی دارم.',type:'ماجراجو'}
+    ];
+
+    const types = ['خلاق','رهبر','تحلیل‌گر','حامی','ماجراجو'];
+
+    const qContainer = document.getElementById('questions');
+
+    // تولید HTML سوالات
+    questions.forEach(q=>{
+      const div = document.createElement('div');
+      div.className='question';
+      div.innerHTML = `
+        <div class="q-title">${q.id}. ${q.text}</div>
+        <div class="scales" data-qid="${q.id}" data-type="${q.type}">
+          <button type="button" class="scale-btn" data-value="1">1</button>
+          <button type="button" class="scale-btn" data-value="2">2</button>
+          <button type="button" class="scale-btn" data-value="3">3</button>
+          <button type="button" class="scale-btn" data-value="4">4</button>
+          <button type="button" class="scale-btn" data-value="5">5</button>
+        </div>
+      `;
+      qContainer.appendChild(div);
+    });
+
+    // رفتار دکمه‌های مقیاس: وقتی کلیک شد، آن دکمه بنفش شود و قبلی‌ها پاک شوند
+    document.querySelectorAll('.scales').forEach(scaleRow=>{
+      scaleRow.addEventListener('click', e=>{
+        const btn = e.target.closest('.scale-btn');
+        if(!btn) return;
+        // پاکسازی انتخاب‌های قبلی در همان ردیف
+        scaleRow.querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+
+    // دکمه محاسبه
+    document.getElementById('calcBtn').addEventListener('click', ()=>{
+      const answers = getAnswers();
+      const feedback = document.getElementById('feedback');
+      const resultsArea = document.getElementById('resultsArea');
+      resultsArea.style.display='none';
+      feedback.textContent='';
+
+      // بررسی تمام سوالات پاسخ داده شده باشند
+      if(answers.length !== questions.length){
+        feedback.innerHTML = '<div class="muted">لطفاً به همه سوالات پاسخ دهید.</div>';
+        return;
+      }
+
+      // محاسبه مجموع امتیازات برای هر تیپ
+      const totals = {};
+      types.forEach(t=>totals[t]=0);
+      answers.forEach(a=>{ totals[a.type] += a.value; });
+
+      // مرتب‌سازی برای یافتن دو تیپ برتر
+      const sorted = Object.keys(totals).map(k=>({type:k,score:totals[k]})).sort((a,b)=>b.score-a.score);
+      const top2 = sorted.slice(0,2);
+
+      // نمایش
+      let html = '<div style="font-weight:700;margin-bottom:8px">نتایج کلی:</div>';
+      html += '<div>' + Object.keys(totals).map(k=>`<div class="result-row"><div>${k}</div><div>${totals[k]}</div></div>`).join('') + '</div>';
+      html += `<hr style="opacity:0.08;margin:10px 0">`;
+      html += `<div style="font-weight:700">دو تیپ برتر:</div>`;
+      html += `<div style="margin-top:6px">1. ${top2[0].type} — ${top2[0].score}</div>`;
+      html += `<div>2. ${top2[1].type} — ${top2[1].score}</div>`;
+
+      resultsArea.innerHTML = html;
+      resultsArea.style.display='block';
+
+    });
+
+    // گرفتن پاسخ‌ها به صورت آرایه {qid,type,value}
+    function getAnswers(){
+      const out = [];
+      document.querySelectorAll('.scales').forEach(row=>{
+        const qid = Number(row.dataset.qid);
+        const type = row.dataset.type;
+        const sel = row.querySelector('.scale-btn.selected');
+        if(sel){
+          out.push({qid,type,value: Number(sel.dataset.value)});
+        }
+      });
+      return out;
+    }
+
+    // پاکسازی
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      document.querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('selected'));
+      document.getElementById('feedback').textContent='';
+      document.getElementById('resultsArea').style.display='none';
+    });
+
+    // ذخیره JSON
+    document.getElementById('saveJsonBtn').addEventListener('click', ()=>{
+      const answers = getAnswers();
+      const payload = {timestamp:new Date().toISOString(),answers:answers};
+      const blob = new Blob([JSON.stringify(payload, null, 2)],{type:'application/json;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'survey_answers.json'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // دانلود Markdown: شامل سوال‌ها، پاسخ‌ها، مجموع‌ها و تیپ‌های برتر
+    document.getElementById('downloadMdBtn').addEventListener('click', ()=>{
+      const answers = getAnswers();
+      const mdLines = [];
+      mdLines.push('# نتایج ارزیابی تیپ‌ها');
+      mdLines.push('');
+      mdLines.push(`- تاریخ: ${new Date().toLocaleString('fa-IR')}`);
+      mdLines.push('');
+      if(answers.length !== questions.length){
+        mdLines.push('> توجه: همه سوالات پاسخ داده نشده‌اند. نتایج جزئی در ادامه آمده است.');
+        mdLines.push('');
+      }
+      mdLines.push('## پرسش‌ها و پاسخ‌ها');
+      mdLines.push('');
+      questions.forEach(q=>{
+        const ans = answers.find(a=>a.qid===q.id);
+        mdLines.push(`- ${q.id}. ${q.text} — **${ans?ans.value:'بدون پاسخ'}** (${q.type})`);
+      });
+
+      // محاسبه مجموع
+      const totals = {};
+      types.forEach(t=>totals[t]=0);
+      answers.forEach(a=>{ totals[a.type] += a.value; });
+      mdLines.push('');
+      mdLines.push('## مجموع امتیازات');
+      mdLines.push('');
+      Object.keys(totals).forEach(k=>mdLines.push(`- ${k}: ${totals[k]}`));
+
+      const sorted = Object.keys(totals).map(k=>({type:k,score:totals[k]})).sort((a,b)=>b.score-a.score);
+      mdLines.push('');
+      mdLines.push('## دو تیپ برتر');
+      mdLines.push('');
+      if(sorted.length>=2){
+        mdLines.push(`1. ${sorted[0].type} — ${sorted[0].score}`);
+        mdLines.push(`2. ${sorted[1].type} — ${sorted[1].score}`);
+      }
+
+      const blob = new Blob([mdLines.join('\n')],{type:'text/markdown;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='survey_results.md'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // افزودن دسترسی صفحه‌کلید: با کلیدهای عددی می‌توان انتخاب کرد (برای هر ردیف روی تمرکز کلیک کنید و 1-5 بزنید)
+    document.querySelectorAll('.question').forEach(qEl=>{
+      qEl.tabIndex = 0;
+      qEl.addEventListener('keydown', e=>{
+        if(e.key>='1' && e.key<='5'){
+          const row = qEl.querySelector('.scales');
+          const btn = row.querySelector(`.scale-btn[data-value="${e.key}"]`);
+          if(btn){ row.querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+        }
+      });
+    });
+
+    // جلوگیری از انتخاب متن هنگام دوبار کلیک
+    document.addEventListener('mousedown', e=>{ if(e.detail>1) e.preventDefault(); });
+
+  </script>
+</body>
+</html>
